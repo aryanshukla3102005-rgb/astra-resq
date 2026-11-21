@@ -1,0 +1,8 @@
+[
+  {"id": "ndrf-15", "name": "NDRF 15th Battalion", "type": "ndrf", "base": "Guptkashi", "lat": 30.5246, "lon": 79.0798, "phone": "+91-1364-000001", "members": 35},
+  {"id": "sdrf-uk", "name": "SDRF Uttarakhand Post", "type": "sdrf", "base": "Sonprayag", "lat": 30.6327, "lon": 78.9993, "phone": "+91-1364-000002", "members": 20},
+  {"id": "itbp-1", "name": "ITBP 1st Battalion", "type": "itbp", "base": "Joshimath", "lat": 30.5550, "lon": 79.5650, "phone": "+91-1389-000003", "members": 40},
+  {"id": "police-rdp", "name": "District Police, Rudraprayag", "type": "police", "base": "Rudraprayag", "lat": 30.2844, "lon": 78.9811, "phone": "+91-1364-000004", "members": 15},
+  {"id": "med-gaurikund", "name": "Medical Relief Camp", "type": "medical", "base": "Gaurikund", "lat": 30.6537, "lon": 79.0251, "phone": "+91-1364-000005", "members": 8},
+  {"id": "heli-ddn", "name": "Air Rescue Unit, Dehradun", "type": "air", "base": "Dehradun", "lat": 30.3165, "lon": 78.0322, "phone": "+91-135-000006", "members": 12}
+]

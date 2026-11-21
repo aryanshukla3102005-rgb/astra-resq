@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Rescue dashboard - ASTRA RESQ{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+{% block content %}
+<div class="dash-bar">
+  <div class="kpi"><b id="k-total">0</b><span>Total SOS</span></div>
+  <div class="kpi crit"><b id="k-critical">0</b><span>Critical</span></div>
+  <div class="kpi unas"><b id="k-unassigned">0</b><span>Unassigned</span></div>
+  <div class="kpi resc"><b id="k-rescued">0</b><span>Rescued</span></div>
+  <div class="sync" id="sync" title="Server: in-memory store polled every 3 s. Local: localStorage + BroadcastChannel mirror (works across tabs of this browser).">
+    Sync: <span class="dot" id="sync-server"></span>server + <span class="dot" id="sync-local"></span>local
+    <span class="dim" id="sync-time"></span>
+  </div>
+</div>
+<main class="dash">
+  <div class="map-wrap"><div id="map" aria-label="Map of SOS alerts and rescue teams"></div></div>
+  <aside class="side">
+    <div class="side-head">
+      <span class="panel-title" style="margin:0">Incoming SOS</span>
+      <select id="filter" aria-label="Filter SOS list">
+        <option value="active">Active</option>
+        <option value="all">All</option>
+        <option value="new">New only</option>
+        <option value="rescued">Rescued</option>
+      </select>
+      <button class="btn btn-sm" id="fit" title="Zoom to all">Fit</button>
+    </div>
+    <div class="sos-list" id="sos-list">
+      <div class="empty-state"><b>No SOS received yet</b>Open the <a href="/sos" target="_blank" rel="noopener">victim device</a> in another window and press SOS.</div>
+    </div>
+    <div class="side-head" style="border-top:1px solid var(--line);border-bottom:none">
+      <span class="dim" style="font-size:12px">Teams: <span id="team-count">-</span> &middot; Map: Bhuvan / OSM</span>
+      <button class="btn btn-sm" id="reset-local" style="margin-left:auto" title="Clears this browser's local mirror (server data is untouched)">Reset local</button>
+    </div>
+  </aside>
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/js/map.js"></script>
+<script src="/js/dashboard.js"></script>
+{% endblock %}

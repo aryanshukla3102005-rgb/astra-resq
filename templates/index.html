@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}ASTRA RESQ - NavIC positioning &amp; SOS coordination{% endblock %}
+{% block content %}
+<main class="landing">
+  <section class="hero">
+    <div class="eyebrow">ASTRA 2026 &middot; Domain 04 &middot; Satellite Communication, Navigation &amp; Connectivity</div>
+    <h1>Find people when the <em>network is gone</em>.</h1>
+    <p class="lead">ASTRA RESQ uses India's own navigation satellites (NavIC / IRNSS) to fix a person's position in places with no mobile signal, carries their SOS out through a store-and-forward link, and puts every victim on an ISRO Bhuvan map so rescue teams can be assigned and tracked.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="/sos" target="_blank" rel="noopener">Open victim device</a>
+      <a class="btn btn-teal" href="/dashboard" target="_blank" rel="noopener">Open rescue dashboard</a>
+      <button class="btn" id="open-both" type="button">Open both side by side</button>
+    </div>
+    <p class="muted" style="font-size:14px;margin-top:12px">Tip: put the victim device on the left and the dashboard on the right. Turn the device's network off, press SOS, then turn it back on.</p>
+  </section>
+
+  <section class="section">
+    <h2>The problem</h2>
+    <div class="grid-3">
+      <div class="panel card"><span class="num">01</span><h3>No signal where disasters happen</h3><p>Flash floods, landslides and cloudbursts in the Himalaya (Kedarnath 2013, Chamoli 2021) hit valleys with little or no mobile coverage - and take down what towers exist.</p></div>
+      <div class="panel card"><span class="num">02</span><h3>"Somewhere near the trail" isn't a location</h3><p>Rescuers lose hours searching. A metre-level satellite fix shared with the SOS turns a search into a pickup.</p></div>
+      <div class="panel card"><span class="num">03</span><h3>Alerts arrive as noise</h3><p>Calls, messages and radio reports reach control rooms unstructured. Teams need one map of who needs help, how badly, and who is closest.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>How it works</h2>
+    <div class="arch" aria-label="System architecture">
+      <div class="arch-node navic"><div class="tag">Space segment</div><b>NavIC GNSS receiver</b><span>IRNSS L5/S + GPS, outputs NMEA 0183 ($GIGSV = NavIC)</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node"><div class="tag">Device</div><b>NMEA reader</b><span>Serial / USB; checksum-validated parsing</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node navic"><div class="tag">Device</div><b>Positioning</b><span>Lat/lon, HDOP accuracy, NavIC sats in view</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node"><div class="tag">Device</div><b>SOS</b><span>Name, people, severity, message + fix</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node sim"><div class="tag">Comms layer (simulated)</div><b>Store &amp; forward</b><span>Offline queue + retry. Production: LoRa mesh relay / SMS fallback</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node bhuvan"><div class="tag">Control room</div><b>Rescue dashboard</b><span>Victims on Bhuvan (ISRO) map, nearest team</span></div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-node"><div class="tag">Field</div><b>Coordination</b><span>Assign &rarr; en route &rarr; rescued; status back to victim</span></div>
+    </div>
+    <div class="legend-row">
+      <span><i style="border-color:var(--teal)"></i>NavIC / positioning</span>
+      <span><i style="border-color:var(--saffron);border-style:dashed"></i>Simulated in this prototype</span>
+      <span><i style="border-color:#8ab4ff"></i>ISRO Bhuvan geospatial layer</span>
+    </div>
+  </section>
+
+  <section class="section grid-2">
+    <div class="panel">
+      <h2 class="panel-title">What's real in this prototype</h2>
+      <ul class="muted" style="margin:0;padding-left:18px">
+        <li>NMEA 0183 parsing (GGA, RMC, GSV) with checksum validation, including the NavIC <span class="mono teal">$GI</span> talker</li>
+        <li>Separate NavIC vs GPS satellite counts, sky plot and signal strengths</li>
+        <li>Offline store-and-forward queue with idempotent retry</li>
+        <li>Bhuvan WMS base map, nearest-team routing by great-circle distance</li>
+        <li>Hardware path: <span class="mono">device/serial_bridge.py</span> reads a real NavIC receiver over serial</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2 class="panel-title">What's simulated</h2>
+      <ul class="muted" style="margin:0;padding-left:18px">
+        <li>The receiver: the victim device replays a generated NMEA log near Kedarnath (or uses browser location, clearly labelled as not NavIC)</li>
+        <li>The comms link: a network toggle stands in for LoRa mesh / satellite / SMS - the queue behaviour is real</li>
+        <li>Rescue teams are seed data in <span class="mono">data/teams.json</span></li>
+        <li>No database: in-memory server store plus a browser mirror (see README)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Tech</h2>
+    <div class="tech-list">
+      <span>NavIC / IRNSS</span><span>NMEA 0183 v4.11</span><span>Python 3.12</span><span>Flask</span><span>pynmea2</span><span>pyserial</span>
+      <span>Leaflet 1.9</span><span>Bhuvan WMS (ISRO/NRSC)</span><span>OpenStreetMap</span><span>localStorage + BroadcastChannel</span><span>Vercel</span>
+    </div>
+    <p class="callout" style="margin-top:20px">Prototype for the ASTRA 2026 hackathon. The comms layer is simulated; positions come from a NavIC-format NMEA replay unless a real receiver is attached through the serial bridge.</p>
+  </section>
+</main>
+<footer class="site-footer">ASTRA RESQ &middot; ASTRA 2026 hackathon prototype</footer>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.getElementById("open-both").addEventListener("click", function () {
+    var w = Math.floor(screen.availWidth / 2), h = screen.availHeight;
+    var dev = window.open("/sos", "astra-sos", "width=" + Math.min(w, 560) + ",height=" + h + ",left=0,top=0");
+    if (!dev) { window.open("/sos", "_blank"); }
+    window.location.href = "/dashboard";
+  });
+</script>
+{% endblock %}

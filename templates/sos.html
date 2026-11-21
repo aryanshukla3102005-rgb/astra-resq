@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Victim device - ASTRA RESQ{% endblock %}
+{% block content %}
+<main class="device">
+  <!-- ============================== receiver -->
+  <section class="device-col">
+    <div class="panel">
+      <h2 class="panel-title">GNSS receiver <span class="dim mono" id="epoch">epoch -/-</span></h2>
+      <div class="source-switch" role="radiogroup" aria-label="Position source">
+        <label><input type="radio" name="src" value="navic" checked> NavIC receiver (NMEA replay)</label>
+        <label><input type="radio" name="src" value="browser"> Browser location</label>
+      </div>
+      <div class="source-note hidden" id="browser-note">Browser location is NOT NavIC - it uses the phone/OS location service. Fallback only.</div>
+
+      <div class="fix-banner acq" id="fix-banner" style="margin-top:12px">
+        <span class="dot"></span><span id="fix-text">Acquiring satellites...</span>
+        <span class="src" id="fix-src">NavIC + GPS</span>
+      </div>
+      <div class="stats">
+        <div class="stat navic"><div class="k">NavIC sats in view</div><div class="v" id="s-navic">-</div></div>
+        <div class="stat gps"><div class="k">GPS sats in view</div><div class="v" id="s-gps">-</div></div>
+        <div class="stat"><div class="k">Sats used</div><div class="v" id="s-used">-</div></div>
+        <div class="stat wide"><div class="k">Position</div><div class="v" id="s-pos">-</div></div>
+        <div class="stat"><div class="k">Accuracy</div><div class="v" id="s-acc">-</div></div>
+        <div class="stat"><div class="k">HDOP</div><div class="v" id="s-hdop">-</div></div>
+        <div class="stat"><div class="k">Altitude</div><div class="v" id="s-alt">-</div></div>
+        <div class="stat"><div class="k">UTC</div><div class="v" id="s-time">-</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">Satellites in view <span class="dim">sky plot &middot; signal strength (dB-Hz)</span></h2>
+      <div class="sats">
+        <svg class="skyplot" id="skyplot" viewBox="0 0 200 200" role="img" aria-label="Sky plot of satellites"></svg>
+        <div>
+          <div class="snr-bars" id="snr-bars"></div>
+          <div class="snr-labels" id="snr-labels"></div>
+          <div class="legend"><span><i style="background:var(--teal)"></i>NavIC (IRNSS)</span><span><i style="background:var(--gps)"></i>GPS</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">NMEA stream <span class="dim mono">$GI = NavIC &middot; $GP = GPS &middot; $GN = combined</span></h2>
+      <div class="terminal" id="terminal" aria-live="off"></div>
+    </div>
+  </section>
+
+  <!-- ============================== SOS -->
+  <section class="device-col form-col">
+    <div class="net" id="net">
+      <div class="net-state" id="net-state">NETWORK: ONLINE<small>Messages are delivered immediately</small></div>
+      <label class="switch" title="Simulate losing connectivity">
+        <input type="checkbox" id="net-toggle" checked aria-label="Network connectivity">
+        <span></span>
+      </label>
+    </div>
+
+    <form class="panel" id="sos-form" novalidate>
+      <h2 class="panel-title">Raise SOS</h2>
+      <div class="form-grid">
+        <div><label for="f-name">Your name *</label><input id="f-name" name="name" maxlength="80" autocomplete="name" required></div>
+        <div><label for="f-phone">Phone (optional)</label><input id="f-phone" name="phone" maxlength="20" inputmode="tel" autocomplete="tel"></div>
+        <div><label for="f-people">People with you</label><input id="f-people" name="people_count" type="number" min="1" max="500" value="1" inputmode="numeric"></div>
+        <div>
+          <label>Severity</label>
+          <div class="sev-pick" role="radiogroup" aria-label="Severity">
+            <label class="sev-low"><input type="radio" name="severity" value="low"><b>Low</b></label>
+            <label class="sev-medium"><input type="radio" name="severity" value="medium" checked><b>Med</b></label>
+            <label class="sev-critical"><input type="radio" name="severity" value="critical"><b>Critical</b></label>
+          </div>
+        </div>
+        <div class="full"><label for="f-msg">Message</label><textarea id="f-msg" name="message" maxlength="500" placeholder="e.g. Trail washed out near Rambara, one person injured"></textarea></div>
+      </div>
+      <button type="submit" class="sos-btn" id="sos-btn" disabled>SOS<small id="sos-hint">Waiting for a position fix...</small></button>
+      <div class="form-msg" id="form-msg" role="status"></div>
+    </form>
+
+    <div class="panel">
+      <h2 class="panel-title">My alerts <span class="queue-badge" id="queue-badge">0 queued</span></h2>
+      <div class="mylog" id="mylog"><div class="mylog-empty">No alerts sent from this device yet.</div></div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="/js/sos.js"></script>{% endblock %}
