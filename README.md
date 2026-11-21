@@ -102,7 +102,7 @@ CLI alternative: `npm i -g vercel && vercel`.
 
 ## No database: the sync model
 
-There is intentionally **no database** of any kind.
+There is intentionally **no database** of any kind of.
 
 - **Server store:** `core/store.py` keeps SOS records in memory behind a lock. Seed data (teams, sample NMEA) are read-only files in `data/`. Locally (`python app.py`) this is one process, so it works across devices on the same Wi-Fi.
 - **Client mirror:** every SOS and every dashboard change is also written to `localStorage["astra.sos"]` and broadcast on `BroadcastChannel("astra-resq")`.
